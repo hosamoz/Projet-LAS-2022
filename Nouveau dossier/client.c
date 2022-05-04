@@ -11,6 +11,8 @@
 #include "virement.h"
 #include "utils_v1.h"
 
+#define MAX 50
+
 // PRE: ServerIP : a valid IP address
 //      ServerPort: a valid port number
 // POST: on success connects a client socket to ServerIP:port
@@ -24,8 +26,13 @@ int initSocketClient(char *ServerIP, int Serverport)
 }
 
 int main(int argc, char **argv)
-{
+{ 
+  char command[MAX];
+  int nbCharRead = 0;
   if(argc != 5){
+    /*
+      TODO : Affichage Success à la fin non voulu
+    */
     perror("Nombre d'arguments incorrect !\n");
     exit(EXIT_FAILURE);
   }
@@ -35,11 +42,17 @@ int main(int argc, char **argv)
   //int compte_client = atoi(argv[3]);
   //int delay = atoi(argv[4]);
 
+  printf("Bienvenue dans la banque :\n");
+  printf("Pour éffectué un virement normal tapper la commande : '+ [numero_compte_beneficiaire] [montant]'\n");
+  printf("Pour éffectué un virement recurrent tapper la commande : '* [numero_compte_beneficiaire] [montant]'\n");
+  printf("Pour quitter le programme tapper q \n");
 
 
+  do{
+    write(1,">", 1);
+    nbCharRead = sread(STDIN_FILENO, command, MAX);
+  }while(nbCharRead > 0);
 
-  /* retrieve player name */
-  printf("Bienvenue dans la banque, veuillez introduire votre virement :\n");
 
   Virement virementTest;
   virementTest.compte_beneficiaire = 1;
@@ -56,11 +69,11 @@ int main(int argc, char **argv)
 
   if (virementTest.code == VIREMENT_OK)
   {
-    printf("Réponse du serveur : Inscription acceptée\n");
+    printf("Réponse du serveur : Virement accepté\n");
   }
   else if (virementTest.code == VIREMENT_KO)
   {
-    printf("Réponse du serveur : Inscription refusée\n");
+    printf("Réponse du serveur : Virement refusé\n");
   }
 
 
